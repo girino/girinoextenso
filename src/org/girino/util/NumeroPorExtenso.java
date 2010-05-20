@@ -287,8 +287,7 @@ public class NumeroPorExtenso {
 		return converteMoeda(n, new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100);
 	}	
 	public static void main(String[] args) {
-		//System.out.println(args[0] + ": " + NumeroPorExtenso.getInstance().converteMoeda(new BigDecimal(args[0]), new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100));
-		System.out.println(NumeroPorExtenso.getInstance().converteMoeda(new BigDecimal(0.01), new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100));
+		System.out.println(args[0] + ": " + NumeroPorExtenso.getInstance().converteMoeda(new BigDecimal(args[0]), new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100));
 	}	
 
 }
