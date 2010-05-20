@@ -2,7 +2,11 @@ package org.girino.util;
 import java.math.BigDecimal;
 import java.util.*;
 
-/*
+/**
+ * Esta classe traduz números de sua forma numeral para sua forma por extenso.
+ * 
+ * @author girino
+ * 
  * Regras:
  * 1. numeros abaixo de 20 tem nome próprio.
  * 2. de 21 a 99 os numeros são formados por DEZENA 'e' UNIDADE (exemplo: "trinta e cinco")
@@ -33,6 +37,11 @@ public class NumeroPorExtenso {
 	private NumeroPorExtenso() {
 	}
 	private static NumeroPorExtenso instance = new NumeroPorExtenso();
+	
+	/**
+	 * singleton
+	 * @return a instância default.
+	 */
 	public static NumeroPorExtenso getInstance() {
 		return instance;
 	}
@@ -208,7 +217,7 @@ public class NumeroPorExtenso {
 	/**
 	 * Implementa a regra 6:
 	 * Separa em grupos de 3 dígitos (potencias de 1000), processa os grupos separadamente
-         * e depois reagrupa, separando por virgula exceto no ultimo separador, que pode ser
+     * e depois reagrupa, separando por virgula exceto no ultimo separador, que pode ser
 	 * "e" ou entao ser omitido (regra 6a e 6a1).
 	 **/
 	public String converteInteiro(BigDecimal n) {
@@ -240,6 +249,21 @@ public class NumeroPorExtenso {
 		return principal(n.multiply(new BigDecimal(escalaSubdivisao)).divideToIntegralValue(BigDecimal.ONE), nomesSubdivisao);
 	}
 
+	/**
+	 * Similar ao converteInteiro(), mas usa o sufixo da moeda fornecido (e.g. real, dollar, etc) 
+	 * e computa as casas decimais (centavos) de acordo com a escala fornecida e 
+	 * usando os nomes fornecidos para a subdivisão da moeda.
+	 * 
+	 * É necessário os nomes no singular e no plural para a moeda, bem como para a subdivisão. 
+	 * A escala deve ser preferencialmente um múltiplo de 10, já que a notação original é decimal.
+	 * O funcionamento para escalas diferentes desse formato não é garantido.
+	 * 
+	 * @param n Número a ser convertido.
+	 * @param nomesMoeda vetor contendo o nome no singular e no plural da moeda.
+	 * @param nomesSubdivisao vetor contendo o nome no singular e no plural da subdivisão da moeda.
+	 * @param escalaSubdivisao escala usada na subdivisão (100 para centavos).
+	 * @return O valor escrito por extenso.
+	 */
 	public String converteMoeda(BigDecimal n, String[] nomesMoeda, String[] nomesSubdivisao, int escalaSubdivisao) {
 		BigDecimal[] split = n.divideAndRemainder(BigDecimal.ONE);
 
@@ -253,7 +277,12 @@ public class NumeroPorExtenso {
 		}
 		return principal(split[0], nomesMoeda) + TipoSeparador.E.getSeparador() + subdivisao(split[1], nomesSubdivisao, escalaSubdivisao);
 	}
-	
+	/**
+	 * Este método é usado quando a moeda é o real (BRL), subdividido em centavos.
+	 * 
+	 * @param n Número a ser convertido.
+	 * @return O valor escrito por extenso.
+	 */
 	public String converteMoeda(BigDecimal n) {
 		return converteMoeda(n, new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100);
 	}	
