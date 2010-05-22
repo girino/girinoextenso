@@ -72,6 +72,27 @@ public class NumeroPorExtensoTests {
 		assertEquals("dois milhões de reais", n.converteMoeda(new BigInteger("2000000")));
 		assertEquals("um real", n.converteMoeda(new Short((short) 1)));
 		assertEquals("um real e um centavo", n.converteMoeda(new Float(1.01)));
+		
+		// really big number
+		BigDecimal big = new BigDecimal(1000).pow(17).multiply(new BigDecimal(345));
+		big = big.add(new BigDecimal(1000).pow(16).multiply(new BigDecimal(233)));
+		big = big.add(new BigDecimal(1000).pow(15).multiply(new BigDecimal(950)));
+		big = big.add(new BigDecimal(1000).pow(14).multiply(new BigDecimal(861)));
+		big = big.add(new BigDecimal(1000).pow(13).multiply(new BigDecimal(772)));
+		big = big.add(new BigDecimal(1000).pow(12).multiply(new BigDecimal(683)));
+		big = big.add(new BigDecimal(1000).pow(11).multiply(new BigDecimal(594)));
+		big = big.add(new BigDecimal(1000).pow(10).multiply(new BigDecimal(405)));
+		big = big.add(new BigDecimal(1000).pow(9).multiply(new BigDecimal(306)));
+		big = big.add(new BigDecimal(1000).pow(8).multiply(new BigDecimal(217)));
+		big = big.add(new BigDecimal(1000).pow(7).multiply(new BigDecimal(128)));
+		big = big.add(new BigDecimal(1000).pow(6).multiply(new BigDecimal(39)));
+		big = big.add(new BigDecimal(1000).pow(5).multiply(new BigDecimal(940)));
+		big = big.add(new BigDecimal(1000).pow(4).multiply(new BigDecimal(851)));
+		big = big.add(new BigDecimal(1000).pow(3).multiply(new BigDecimal(762)));
+		big = big.add(new BigDecimal(1000).pow(2).multiply(new BigDecimal(673)));
+		big = big.add(new BigDecimal(1000).pow(1).multiply(new BigDecimal(23)));
+		big = big.add(new BigDecimal(17));
+		assertEquals("trezentos e quarenta e cinco septendecilhões, duzentos e trinta e três sedecilhões, novecentos e cinquenta quindecilhões, oitocentos e sessenta e um quatordecilhões, setecentos e setenta e dois tredecilhões, seiscentos e oitenta e três dodecilhões, quinhentos e noventa e quatro undecilhões, quatrocentos e cinco decilhões, trezentos e seis octilhões, duzentos e dezessete setilhões, cento e vinte e oito sextilhões, trinta e nove quintilhões, novecentos e quarenta quatrilhões, oitocentos e cinquenta e um trilhões, setecentos e sessenta e dois bilhões, seiscentos e setenta e três milhões, vinte e três mil e dezessete reais", n.converteMoeda(big));
 	}
 
 }
