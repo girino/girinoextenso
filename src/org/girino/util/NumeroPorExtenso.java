@@ -15,7 +15,7 @@ import java.util.*;
  * 5. números maiores que cem são compostos por CENTENA 'e' extenso(numero % 100), onde extenso() é a função que converte números menores que 100.
  *    (exemplos: cento e vinte e um, quinhentos e quarenta).
  * 6. acima de 1000 agrupa-se em blocos de 3 dígitos (potências de 1000) onde a representação 
- *    descrita em 5 é usada internametne, posfixados pelo descritor do grupo (mil, milhão, etc). Os grupos são concatenados por virgula
+ *    descrita em 5 é usada internametne, posfixados pelo descritor do grupo (mil, milhão, etc). Os grupos são concatenados por virgula (opcional)
  * 6a. A ultima concatenação é feita por "e".
  * 6a1. A ultima concatenação é omitida (Ou substituida por vírgula) caso o ultimo grupo seja maior que 100 e não seja múltiplo e 100.
  * 6b. o "um" em frente ao descritor de grupo "mil" é opcional e deve ser parametrizável.
@@ -34,16 +34,43 @@ import java.util.*;
 
 public class NumeroPorExtenso {
 
-	private NumeroPorExtenso() {
+	/* parâmetros */
+	private boolean milSemUm = false;
+	private TipoSeparador separadorGrupo = TipoSeparador.VIRGULA;
+	/* este parÂmetro não deveria existir, já que segundo as gramáticas omite-se apenas depois de mil */
+	private TipoSeparador separadorUltimoGrupo = TipoSeparador.VIRGULA;
+	private TipoSeparador separadorDepoisDeMil = TipoSeparador.VIRGULA;
+
+
+	/**
+	 * O construtor permite que se crie novas instÂncias paramterizadas de forma distinta do padrão.
+	 * Os parametros opcionais definem:
+	 * 1. Se o descritor de milhares será prefixado por 1 quando for o caso ("um mil" ao invés de apenas "mil");
+	 * 2. Se a vírgula depois dos descritores de potencias de dez (mil, milhão, bilhão, etc) 
+	 *    será omitda;
+	 * 3. Se haverá vírgula do descritor "mil" ("dez mil, duzentos e cinquenta" contra "dez mil duzentos e cinquenta").
+	 *  
+	 * @param milSemUm Caso seja "true", o "um" será omitido antes dos milhares.
+	 * @param virgulaEntreGrupos Caso seja true usa-se a vírgula, caso false, será omitida.
+	 * @param virgulaDepoisDeMil Caso seja true usa-se o que for determinado pelo 
+	 * 								parametro virgulaEntreGrupos, caso seja false, 
+	 * 								omite-se a virgula em todos os casos.
+	 */
+	public NumeroPorExtenso(boolean milSemUm, boolean virgulaEntreGrupos, boolean virgulaDepoisDeMil) {
+		this.milSemUm = milSemUm;
+		separadorGrupo = virgulaEntreGrupos?TipoSeparador.VIRGULA:TipoSeparador.NENHUM;
+		separadorUltimoGrupo = separadorGrupo;
+		// virgula depois de mil só faz sentido se o separador for virgula
+		separadorDepoisDeMil = virgulaDepoisDeMil?separadorGrupo:TipoSeparador.NENHUM;
 	}
-	private static NumeroPorExtenso instance = new NumeroPorExtenso();
 	
+	private static NumeroPorExtenso defaultInstance = new NumeroPorExtenso(false, true, true);
 	/**
 	 * singleton
 	 * @return a instância default.
 	 */
-	public static NumeroPorExtenso getInstance() {
-		return instance;
+	public static NumeroPorExtenso getDefaultInstance() {
+		return defaultInstance;
 	}
 	
 
@@ -63,10 +90,6 @@ public class NumeroPorExtenso {
 			return separadorStr;
 		}
 	}
-
-	private boolean milSemUm = false;
-	private TipoSeparador separadorGrupo = TipoSeparador.VIRGULA;
-	private TipoSeparador separadorUltimoGrupo = TipoSeparador.VIRGULA;
 
 	public static final String ZERO = "zero";
 	public static final String CEM = "cem";
@@ -206,7 +229,9 @@ public class NumeroPorExtenso {
 		if (!omiteUltimoSeparador && it.hasNext()) {
 			ret = it.next().getExtenso() + TipoSeparador.E.getSeparador() + ret;
 		} else if (it.hasNext()) {
-			ret = it.next().getExtenso() + separadorUltimoGrupo.getSeparador() + ret;
+			TuplaGrupo grupo = it.next();
+			TipoSeparador separador = grupo.getPosicao().equals(1)?separadorDepoisDeMil:separadorUltimoGrupo;
+			ret = grupo.getExtenso() + separador.getSeparador() + ret;
 		}
 		while (it.hasNext()) {
 			ret = it.next().getExtenso() + separadorGrupo.getSeparador() + ret;
@@ -237,7 +262,6 @@ public class NumeroPorExtenso {
 		List<TuplaGrupo> grupos = montaGrupos(n);
 		TipoSeparador separador = TipoSeparador.NENHUM;
 		// se for maior que milhão, usa "de" (regra 7).
-		System.out.println(grupos.get(0).getPosicao());
 		if (grupos.get(0).getPosicao() >= 2) {
 			separador = TipoSeparador.DE;
 		}
@@ -287,7 +311,7 @@ public class NumeroPorExtenso {
 		return converteMoeda(n, new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100);
 	}	
 	public static void main(String[] args) {
-		System.out.println(args[0] + ": " + NumeroPorExtenso.getInstance().converteMoeda(new BigDecimal(args[0]), new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100));
+		System.out.println(args[0] + ": " + NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(args[0]), new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100));
 	}	
 
 }
