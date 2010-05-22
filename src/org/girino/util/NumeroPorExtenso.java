@@ -245,7 +245,8 @@ public class NumeroPorExtenso {
      * e depois reagrupa, separando por virgula exceto no ultimo separador, que pode ser
 	 * "e" ou entao ser omitido (regra 6a e 6a1).
 	 **/
-	public String converteInteiro(BigDecimal n) {
+	public  <T extends Number> String converteInteiro(T number) {
+		BigDecimal n = new BigDecimal(number.toString());
 		// na verdade a penas o 0 precisa ser exceção, mas isso poupa esforço.
 		if (n.compareTo(C_1000) < 0) return centenas(n.intValue());
 
@@ -288,7 +289,8 @@ public class NumeroPorExtenso {
 	 * @param escalaSubdivisao escala usada na subdivisão (100 para centavos).
 	 * @return O valor escrito por extenso.
 	 */
-	public String converteMoeda(BigDecimal n, String[] nomesMoeda, String[] nomesSubdivisao, int escalaSubdivisao) {
+	public  <T extends Number> String converteMoeda(T number, String[] nomesMoeda, String[] nomesSubdivisao, int escalaSubdivisao) {
+		BigDecimal n = new BigDecimal(number.toString());
 		BigDecimal[] split = n.divideAndRemainder(BigDecimal.ONE);
 
 		// se não houver centavos, só retorna o principal
@@ -307,11 +309,7 @@ public class NumeroPorExtenso {
 	 * @param n Número a ser convertido.
 	 * @return O valor escrito por extenso.
 	 */
-	public String converteMoeda(BigDecimal n) {
-		return converteMoeda(n, new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100);
+	public <T extends Number> String converteMoeda(T numero) {
+		return converteMoeda(numero, new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100);
 	}	
-	public static void main(String[] args) {
-		System.out.println(args[0] + ": " + NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(args[0]), new String[] {"real", "reais"}, new String[] {"centavo", "centavos"}, 100));
-	}	
-
 }

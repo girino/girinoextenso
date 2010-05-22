@@ -3,6 +3,7 @@ package org.girino.util;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.junit.Test;
 
@@ -17,21 +18,21 @@ public class NumeroPorExtensoTests {
 	@Test
 	public void testConverteInteiro() {
 		NumeroPorExtenso n = NumeroPorExtenso.getDefaultInstance();
-		assertEquals("um mil", n.converteInteiro(new BigDecimal(1000)));
-		assertEquals("um mil e um", n.converteInteiro(new BigDecimal(1001)));
+		assertEquals("um mil", n.converteInteiro(1000));
+		assertEquals("um mil e um", n.converteInteiro(1001));
 		assertEquals("doze mil, trezentos e quarenta e cinco", n.converteInteiro(new BigDecimal(12345.67)));
-		assertEquals("um milhão", n.converteInteiro(new BigDecimal(1000000)));
-		assertEquals("dois milhões", n.converteInteiro(new BigDecimal(2000000)));
-		assertEquals("um", n.converteInteiro(new BigDecimal(1)));
-		assertEquals("um", n.converteInteiro(new BigDecimal(1.01)));
+		assertEquals("um milhão", n.converteInteiro(1000000L));
+		assertEquals("dois milhões", n.converteInteiro(new BigInteger("2000000")));
+		assertEquals("um", n.converteInteiro((short)1));
+		assertEquals("um", n.converteInteiro(1.01));
 		
 		// testa outras possibilidades
 		// mil sem um
 		n = new NumeroPorExtenso(true, true, true);
-		assertEquals("mil", n.converteInteiro(new BigDecimal(1000)));
-		assertEquals("mil e um", n.converteInteiro(new BigDecimal(1001)));
-		assertEquals("doze mil, trezentos e quarenta e cinco", n.converteInteiro(new BigDecimal(12345.67)));
-		assertEquals("um milhão", n.converteInteiro(new BigDecimal(1000000)));
+		assertEquals("mil", n.converteInteiro(1000));
+		assertEquals("mil e um", n.converteInteiro(1001));
+		assertEquals("doze mil, trezentos e quarenta e cinco", n.converteInteiro(12345.67));
+		assertEquals("um milhão", n.converteInteiro(1000000));
 
 		// sem virgulas
 		n = new NumeroPorExtenso(true, false, true);
@@ -64,13 +65,13 @@ public class NumeroPorExtensoTests {
 	@Test
 	public void testConverteMoedaBigDecimal() {
 		NumeroPorExtenso n = NumeroPorExtenso.getDefaultInstance();
-		assertEquals("um mil reais", n.converteMoeda(new BigDecimal(1000)));
-		assertEquals("um mil e um reais", n.converteMoeda(new BigDecimal(1001)));
-		assertEquals("doze mil, trezentos e quarenta e cinco reais e sessenta e sete centavos", n.converteMoeda(new BigDecimal(12345.67)));
-		assertEquals("um milhão de reais", n.converteMoeda(new BigDecimal(1000000)));
-		assertEquals("dois milhões de reais", n.converteMoeda(new BigDecimal(2000000)));
-		assertEquals("um real", n.converteMoeda(new BigDecimal(1)));
-		assertEquals("um real e um centavo", n.converteMoeda(new BigDecimal(1.01)));
+		assertEquals("um mil reais", n.converteMoeda(1000));
+		assertEquals("um mil e um reais", n.converteMoeda(new BigInteger("1001")));
+		assertEquals("doze mil, trezentos e quarenta e cinco reais e sessenta e sete centavos", n.converteMoeda(12345.67));
+		assertEquals("um milhão de reais", n.converteMoeda(new Long(1000000)));
+		assertEquals("dois milhões de reais", n.converteMoeda(new BigInteger("2000000")));
+		assertEquals("um real", n.converteMoeda(new Short((short) 1)));
+		assertEquals("um real e um centavo", n.converteMoeda(new Float(1.01)));
 	}
 
 }
