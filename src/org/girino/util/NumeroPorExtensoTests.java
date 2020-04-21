@@ -1,11 +1,13 @@
 package org.girino.util;
 
-import static org.junit.Assert.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NumeroPorExtensoTests {
 
@@ -93,6 +95,29 @@ public class NumeroPorExtensoTests {
 		big = big.add(new BigDecimal(1000).pow(1).multiply(new BigDecimal(23)));
 		big = big.add(new BigDecimal(17));
 		assertEquals("trezentos e quarenta e cinco septendecilhões, duzentos e trinta e três sedecilhões, novecentos e cinquenta quindecilhões, oitocentos e sessenta e um quatordecilhões, setecentos e setenta e dois tredecilhões, seiscentos e oitenta e três dodecilhões, quinhentos e noventa e quatro undecilhões, quatrocentos e cinco decilhões, trezentos e seis octilhões, duzentos e dezessete setilhões, cento e vinte e oito sextilhões, trinta e nove quintilhões, novecentos e quarenta quatrilhões, oitocentos e cinquenta e um trilhões, setecentos e sessenta e dois bilhões, seiscentos e setenta e três milhões, vinte e três mil e dezessete reais", n.converteMoeda(big));
+	}
+	
+	@Test
+	public void testRegressionBug2( ) {
+		// regressão bug https://github.com/girino/girinoextenso/issues/2
+		assertEquals("nove centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.09)));
+		assertEquals("oito centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.08)));
+		assertEquals("sete centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.07)));
+		assertEquals("seis centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.06)));
+		assertEquals("cinco centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.05)));
+		assertEquals("quatro centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.04)));
+		assertEquals("três centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.03)));
+		assertEquals("dois centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.02)));
+		assertEquals("um centavo", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(0.01)));
+		assertEquals("trinta e três centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(1.0/3.0)));
+		assertEquals("sessenta e sete centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(2.0/3.0)));
+		assertEquals("trinta e três centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(1.0f/3.0f)));
+		assertEquals("onze centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(1.0/9.0)));
+		assertEquals("quatorze centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(1.0/7.0)));
+		assertEquals("oito centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(1.0/13.0)));
+		assertEquals("nove centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(1.0/11.0)));
+		assertEquals("três centavos", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(1.0/30.0)));
+		assertEquals("um centavo", NumeroPorExtenso.getDefaultInstance().converteMoeda(new BigDecimal(1.0/90.0)));
 	}
 
 }

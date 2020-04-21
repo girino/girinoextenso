@@ -1,6 +1,10 @@
 package org.girino.util;
 import java.math.BigDecimal;
-import java.util.*;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Esta classe traduz números de sua forma numeral para sua forma por extenso.
@@ -93,9 +97,9 @@ public class NumeroPorExtenso {
 
 	public static final String ZERO = "zero";
 	public static final String CEM = "cem";
-	public static final BigDecimal C_1000 = new BigDecimal(1000);
-	public static final BigDecimal C_100 = new BigDecimal(100);
-	public static final BigDecimal C_0 = new BigDecimal(0);
+	public static final BigDecimal C_1000 = new BigDecimal(1000, MathContext.UNLIMITED);
+	public static final BigDecimal C_100 = new BigDecimal(100, MathContext.UNLIMITED);
+	public static final BigDecimal C_0 = new BigDecimal(0, MathContext.UNLIMITED);
 
 	public static String[] UNIDADES = {
 		"", "um", "dois", "tr\u00EAs", "quatro", "cinco", "seis", "sete", "oito", "nove", 
@@ -246,7 +250,7 @@ public class NumeroPorExtenso {
 	 * "e" ou entao ser omitido (regra 6a e 6a1).
 	 **/
 	public  <T extends Number> String converteInteiro(T number) {
-		BigDecimal n = new BigDecimal(number.toString());
+		BigDecimal n = new BigDecimal(number.toString(), MathContext.UNLIMITED);
 		// na verdade a penas o 0 precisa ser exceção, mas isso poupa esforço.
 		if (n.compareTo(C_1000) < 0) return centenas(n.intValue());
 
@@ -271,7 +275,8 @@ public class NumeroPorExtenso {
 
 	String subdivisao(BigDecimal n, String[] nomesSubdivisao, int escalaSubdivisao) {
 		// basicamente é executar o principal da subdivisao * escala.
-		return principal(n.multiply(new BigDecimal(escalaSubdivisao)).divideToIntegralValue(BigDecimal.ONE), nomesSubdivisao);
+		BigDecimal cents = n.multiply(new BigDecimal(escalaSubdivisao, MathContext.UNLIMITED)).setScale(0, RoundingMode.HALF_EVEN);
+		return principal(cents, nomesSubdivisao);
 	}
 
 	/**
@@ -286,11 +291,11 @@ public class NumeroPorExtenso {
 	 * @param n Número a ser convertido.
 	 * @param nomesMoeda vetor contendo o nome no singular e no plural da moeda.
 	 * @param nomesSubdivisao vetor contendo o nome no singular e no plural da subdivisão da moeda.
-	 * @param escalaSubdivisao escala usada na subdivisão (100 para centavos).
+	 * @param escalaSubdivisao escala usada na subdivisão (100 para centavos, 1000 para miliavos).
 	 * @return O valor escrito por extenso.
 	 */
 	public  <T extends Number> String converteMoeda(T number, String[] nomesMoeda, String[] nomesSubdivisao, int escalaSubdivisao) {
-		BigDecimal n = new BigDecimal(number.toString());
+		BigDecimal n = new BigDecimal(number.toString(), MathContext.UNLIMITED);
 		BigDecimal[] split = n.divideAndRemainder(BigDecimal.ONE);
 
 		// se não houver centavos, só retorna o principal
